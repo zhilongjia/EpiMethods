@@ -41,7 +41,7 @@ For this exercise, we are assuming that:
     -- restrict to those participants who are of 18 years of age or older
 
 ```{r load, message=FALSE, warning=FALSE}
-load("Data/surveydata/cholesterolNHANES15part1.rdata") #Loading the dataset
+load("Data/surveydata/cholesterolNHANES15part1.RData") #Loading the dataset
 ls()
 ```
 

@@ -14,7 +14,7 @@ library(survey)
 NHANES survey data is loaded into the workspace.
 
 ```{r loading, eval=TRUE, cache=TRUE }
-load(file = "Data/surveydata/NHANESsample.Rdata")
+load(file = "Data/surveydata/NHANESsample.RData")
 ls()
 ```
 
