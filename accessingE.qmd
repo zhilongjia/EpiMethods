@@ -12,10 +12,10 @@ You cannot input any codes on this website but need to download the exercise fil
 
 We will use the article by @palis2020relationship, [DOI: 10.1080/09638237.2018.1437602](https://www.researchgate.net/profile/Heather_Palis/publication/323136807_The_relationship_between_sense_of_community_belonging_and_self-rated_mental_health_among_Canadians_with_mental_or_substance_use_disorders/links/5a96ff210f7e9ba42974c0dd/The-relationship-between-sense-of-community-belonging-and-self-rated-mental-health-among-Canadians-with-mental-or-substance-use-disorders.pdf).
 
--   Download the [CCHS MH topical index](https://gsg.uottawa.ca/data/teaching/escc-cchs/fmgd_pumf/2012/cchs_mh_topical_index.pdf)
--   Download the [CCHS MH Data Dictionary](https://gsg.uottawa.ca/data/teaching/escc-cchs/fmgd_pumf/2012/cchs_mh_datadictionary.pdf)
+-   Download the [CCHS MH topical index](https://datalib.usask.ca/dli/health/cchs/2012-mh/doc/cchs_mh_topical_index.pdf)
+-   Download the [CCHS MH Data Dictionary](https://datalib.usask.ca/dli/health/cchs/2012-mh/doc/cchs_mh_datadictionary.pdf)
 
-## Question 1: [60\% grade]
+## Question 1: \[60% grade\]
 
 ### 1(a) Importing dataset
 
@@ -28,15 +28,27 @@ load("Data/accessing/cchsMH.RData")
 
 Subset the dataset according to the eligibility criteria / restriction specified in the paper
 
--   Identify the variable needed for eligibility criteria 
+-   Identify the variable needed for eligibility criteria
 
 **Hint**
 
 -   Read the first paragraph of **Analytic sample** (page 2) for the eligibility criteria
 -   Eligibility criteria was determined based on only **one** variable. Only work with 'YES' category.
 
+a mental or substance use disorder (MSUD).
+
+at least
+one of the following MSUDs in the previous 12 months: 
+a mood disorder (i.e. a major depressive episode, bipolar disorder, or mania), 
+generalized anxiety disorder, or substance abuse or dependence (i.e. alcohol, cannabis, or other drugs).
+Concurrent mental and substance use disorders could not be determined; 
+however, just whether respondents reported the presence of any of these disorders at any point in the previous year.
+
 ```{r}
 # your code here
+colnames(cmh) %>% sort
+table(cmh$ADM_RNO)
+cmh_sub <- dplyr::filter(cmh, CCC_280=="YES"   )
 
 ```
 
@@ -44,7 +56,7 @@ Subset the dataset according to the eligibility criteria / restriction specified
 
 In the dataset, retain only the variables associated with outcome measure, explanatory variable, potential confounders and survey weight. There should be eight variables (one outcome, one exposure, five confounders, and one survey weight).
 
-Here are the steps: 
+Here are the steps:
 
 -   Identify the outcome variable
 
@@ -54,33 +66,79 @@ Here are the steps:
 
 -   Identify the survey weight variable
 
-
 -   **Hint**
 
     1.  Read
 
-       -   first and second paragraphs of **Study variables** for the outcome, explanatory and confounding variables
-       -   third paragraph of the **Statistical analyses** for the survey weights variable.
+    -   first and second paragraphs of **Study variables** for the outcome, explanatory and confounding variables
+    -   third paragraph of the **Statistical analyses** for the survey weights variable.
 
     2.  There were **five** potential confounders.
     3.  Potentially useful functions for this exercise:
 
-      -   [%in%](https://www.rdocumentation.org/packages/base/versions/3.6.2/topics/match)
-      -   [levels](https://www.rdocumentation.org/packages/base/versions/3.6.2/topics/levels)
-      -   [recode](https://rdrr.io/cran/car/man/recode.html)
-      -   [subset](https://www.rdocumentation.org/packages/base/versions/3.6.2/topics/subset)
-      -   [as.factor](https://www.rdocumentation.org/packages/base/versions/3.6.2/topics/factor)
-      -   [relevel](https://www.rdocumentation.org/packages/stats/versions/3.6.2/topics/relevel)
-      -   or [dplyr ways](https://ehsanx.github.io/intro2R/data-analysis-with-dplyr.html): [filter](https://www.rdocumentation.org/packages/dplyr/versions/0.7.8/topics/filter), [select](https://www.rdocumentation.org/packages/dplyr/versions/0.7.8/topics/select)
+    -   [%in%](https://www.rdocumentation.org/packages/base/versions/3.6.2/topics/match)
+    -   [levels](https://www.rdocumentation.org/packages/base/versions/3.6.2/topics/levels)
+    -   [recode](https://rdrr.io/cran/car/man/recode.html)
+    -   [subset](https://www.rdocumentation.org/packages/base/versions/3.6.2/topics/subset)
+    -   [as.factor](https://www.rdocumentation.org/packages/base/versions/3.6.2/topics/factor)
+    -   [relevel](https://www.rdocumentation.org/packages/stats/versions/3.6.2/topics/relevel)
+    -   or [dplyr ways](https://ehsanx.github.io/intro2R/data-analysis-with-dplyr.html): [filter](https://www.rdocumentation.org/packages/dplyr/versions/0.7.8/topics/filter), [select](https://www.rdocumentation.org/packages/dplyr/versions/0.7.8/topics/select)
+
+eight variables (one outcome, one exposure, five confounders, and one survey weight)
+outcome: SCR_082
+exposure: GEN_10
+confounders: DHHGAGE
+weight: WTS_M
+
+
+The outcome variable was categorized into three groups: excellent or very good, good, fair or poor.
+
+age (grouped in 10-year increments), 
+sex (male versus female), 
+respondent’s cultural or racial identity (white versus non-white), 
+main source of income (employment income, workers compensation/welfare, senior’s benefits, other, not applicable and not stated), 
+having received help for problems with emotions, mental health or the use of alcohol/drugs in the previous 12 months (yes versus no).
 
 ```{r}
 # your code here
+table(cmh_sub$SCR_082)
+table(cmh_sub$GEN_10)
+library(dplyr)
+NAs <- c("NOT APPLICABLE", "DON'T KNOW", "REFUSAL", "NOT STATED")
+cmh_sub_tidy <- dplyr::select(cmh_sub, ADM_RNO, SCR_082, GEN_10, DHHGAGE, DHH_SEX, SDCGCGT, INCG7, PNC_01A, WTS_M) %>% 
+  dplyr::mutate(outcome=dplyr::case_when(SCR_082 %in% c("EXCELLENT", "VERY GOOD") ~ "excellent",
+                                  SCR_082 == "GOOD" ~ "good",
+                                  SCR_082 %in% c("FAIR", "POOR") ~ "poor"),
+                income=if_else(INCG7 %in% c("DON'T KNOW", "REFUSAL", "NOT STATED"), NA,  INCG7),
+                age=case_when(DHHGAGE %in% c("15 TO 19 YEARS", "20 TO 24 YEARS") ~"15-24",
+                              DHHGAGE %in% c("25 TO 29 YEARS", "30 TO 34 YEARS") ~"25-34",
+                              DHHGAGE %in% c("35 TO 39 YEARS", "40 TO 44 YEARS") ~"35-44",
+                              DHHGAGE %in% c("45 TO 49 YEARS", "50 TO 54 YEARS") ~"45-54",
+                              DHHGAGE %in% c("55 TO 59 YEARS", "60 TO 64 YEARS") ~"55-64",
+                              DHHGAGE %in% c("65 TO 69 YEARS", "70 TO 74 YEARS", "75 TO 79 YEARS", "80 YEARS OR MORE") ~">=65"),
+                sex=if_else(DHH_SEX %in% NAs, NA, DHH_SEX ),
+                Community_belonging=if_else(GEN_10 %in% NAs, NA, GEN_10 ),
+                Race=if_else(SDCGCGT %in% NAs, NA, SDCGCGT )
+                ) 
 
+cmh_sub_tidy_selected <- cmh_sub_tidy[,c("outcome","Community_belonging", "sex","Race", "age", "income")]
+
+cmh_sub_tidy_selected$outcome <- factor(cmh_sub_tidy_selected$outcome, c("poor", "good", "excellent"))
+cmh_sub_tidy_selected$Community_belonging <- factor(cmh_sub_tidy_selected$Community_belonging, 
+                                                    c("VERY WEAK", "SOMEWHAT WEAK", "SOMEWHAT STRONG", "VERY STRONG"))
+cmh_sub_tidy_selected$sex <- factor(cmh_sub_tidy_selected$sex, c("MALE", "FEMALE"))
+cmh_sub_tidy_selected$age <- factor(cmh_sub_tidy_selected$age, c("15-24", "25-34", "35-44", "45-54", "55-64", ">=65" ))
+cmh_sub_tidy_selected$income <- factor(cmh_sub_tidy_selected$income, c("EMPLOYMENT INC.", "EI/WORKER'S COMP", "SENIOR BENEFITS", "OTHER"))
+cmh_sub_tidy_selected$Race <- factor(cmh_sub_tidy_selected$Race, c("WHITE", "NON-WHITE"))
+
+cmh_sub_tidy_selected <- na.omit(cmh_sub_tidy_selected)
+tab_CCHL <- tableone::CreateTableOne(data=cmh_sub_tidy_selected, vars=c("Community_belonging", "sex","Race", "age", "income"), strata=c("outcome"), includeNA = TRUE)
+print(tab_CCHL)
 ```
 
 ### 1(d) Creating analytic dataset
 
-Outcome variable has a category 'NOT STATED', but for our analysis, we will omit anyone associated with this category.  Similarly, for explanatory variable, we have categories such as DON'T KNOW, REFUSAL and NOT STATED. We will omit anyone with these categories.
+Outcome variable has a category 'NOT STATED', but for our analysis, we will omit anyone associated with this category. Similarly, for explanatory variable, we have categories such as DON'T KNOW, REFUSAL and NOT STATED. We will omit anyone with these categories.
 
 -   Assign missing values for categories such as DON'T KNOW, REFUSAL and NOT STATED.
 -   Recode the variables as shown in Table 1 in the article. You can use any function/package of your choice. Here is an example (but feel free to use other functions. In R there are many other ways to do this same task.
@@ -103,15 +161,15 @@ Report the number of columns in your analytic dataset, and the variable names.
 
 ```{r}
 # your code here
-
+colnames(cmh_sub_tidy)
 ```
 
-## Question 2: Table 1 [20\% grade]
+## Question 2: Table 1 \[20% grade\]
 
 Reproduce Table 1 presented in the article (or see below). Omit the 'Main source of income' variable from the table. The table you produce should report numbers as follows, with all columns as shown in the table. In other words, the numbers should match.
 
 | Self-rated Mental Health Variable | Total n(%)  | Poor or Fair n(%) | Good n(%)   | Very good or excellent n(%) |
-|------------------|-------------|-------------|-------------|---------------|
+|---------------|---------------|---------------|---------------|---------------|
 | **Study sample**                  | 2628 (100)  | 1002 (38.1)       | 885 (33.7)  | 741 (28.2)                  |
 | **Community belonging**           |             |                   |             |                             |
 | \- Very weak                      | 480 (18.3)  | 282 (28.1)        | 118 (13.3)a | 80 (10.8)a                  |
@@ -147,7 +205,7 @@ require(tableone)
 
 ```
 
-## Question 3: [20\% grade]
+## Question 3: \[20% grade\]
 
 ### 3(a) Subset
 
@@ -155,7 +213,8 @@ Subset the dataset excluding 'Very good or excellent' responses from the self-ra
 
 ```{r}
 # your code here
-
+cmh_sub1 <- dplyr::filter(cmh_sub_tidy_selected, outcome != "excellent")
+cmh_sub1$outcome <- factor(cmh_sub1$outcome, c("poor","good"))
 ```
 
 ### 3(b) Recode
@@ -164,12 +223,14 @@ Recode self-rated mental health variable and make it a binary variable: 'Good' v
 
 ```{r}
 # your code here
-
+cmh_sub1
+fit1 <- glm(I(outcome == "good") ~ Community_belonging +age + sex + Race, data = cmh_sub1, family = binomial)
+Publish::publish(fit1)
 ```
 
 ### 3(c) Regression
 
-Run a logistic regression model for finding the relationship between community belonging (Reference: Very weak) and self-rated mental health (Reference: Poor) among respondents with mental or substance use disorders. Adjust the model for three confounders: sex, age, and race/ethnicity. Do not need to report summary of the model. 
+Run a logistic regression model for finding the relationship between community belonging (Reference: Very weak) and self-rated mental health (Reference: Poor) among respondents with mental or substance use disorders. Adjust the model for three confounders: sex, age, and race/ethnicity. Do not need to report summary of the model.
 
 ```{r}
 # your code here

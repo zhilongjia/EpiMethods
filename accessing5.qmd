@@ -204,7 +204,7 @@ adult21$strata <- as.factor(adult21$strata)
 table(adult21$strata, useNA = "always")
 
 # Sampling weight
-adult21$sweight <- adult21$WTFA
+adult21$sweight <- adult21$WTFA_A
 summary(adult21$sweight)
 
 # Drop the missing values associated with Heart attack, Diabetes, Sex
