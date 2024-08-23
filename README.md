@@ -3,12 +3,22 @@
 
 https://ehsanx.github.io/EpiMethods/
 
+
+## Note
+
+* 00-Advanced-Epidemiological-Methods_highlighted.pdf
+
+* 01-Notebook for EpiMethods.md
+
+* 02-Notebook for EpiMethods.pptx
+
 ## ePub
 `quarto_render("index.qmd", output_format = "epub", cache="./")`
 
 date: '2024-07-26T00:00:00+08:00'
 
 Output created: docs/Advanced-Epidemiological-Methods.epub
+
 
 ## packages
 
